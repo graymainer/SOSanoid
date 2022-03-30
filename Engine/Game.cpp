@@ -26,7 +26,6 @@ Game::Game(MainWindow& wnd)
 	wnd(wnd),
 	gfx(wnd),
 	//testBrick(rect(450.0f, 550.0f, 485.0f, 515.0f), Colors::Blue),
-	bounds(0.0f, (float)gfx.ScreenWidth, 40.0f, (float)gfx.ScreenHeight),
 	playerBall(vec2(gfx.ScreenWidth / 2, gfx.ScreenHeight / 2), vec2(300.0f, 300.0f)),
 	playerPaddle(vec2(gfx.ScreenWidth / 2, gfx.ScreenHeight * 0.9), 60.0f, 15.0f, 20.0f, Colors::Gray, Colors::Blue),
 	rng(rd()),
@@ -54,18 +53,16 @@ Game::Game(MainWindow& wnd)
 	failSound(L"sounds\\gameOver.wav"),
 	deathSound(L"sounds\\death.wav")
 {
-	const Color Colors[4] = { Colors::Red, Colors::Green, Colors::Blue, Colors::Cyan };
-
-	const vec2 topLeft(40.0f, 40.0f);
 
 	int i = 0;
 
 	for (int y = 0; y < nBricksDown; y++)
 	{
-		const Color c = Colors[y];
+		const Color c = gridColors[y];
+
 		for (int x = 0; x < nBricksAcross; x++)
 		{
-			bricks[i] = brick(rect(topLeft + vec2(x * brickWidth, y * brickHeight), brickWidth, brickHeight), c);
+			bricks[i] = brick(rect(gridPos + vec2(x * brickWidth, y * brickHeight), brickWidth, brickHeight), c);
 			i++;
 		}
 	}
@@ -153,6 +150,9 @@ void Game::UpdateModel(float dt)
 
 		if (playerBall.checkForFailure(bounds))
 		{
+			if (bGodMode)
+				return;
+
 			if (nLives <= 0)
 			{
 				deathSound.Play(1.0f, 0.25f);

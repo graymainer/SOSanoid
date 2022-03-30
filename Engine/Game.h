@@ -55,22 +55,28 @@ private:
 	bool bGameWon = false;
 	bool bGameOver = false;
 	bool playedOverSound = false;
+	static constexpr bool bGodMode = false; //god mode for debugging
 
 	int nLives = 2;
 
+	rect bounds = rect(0.0f, (float)gfx.ScreenWidth, 40.0f, (float)gfx.ScreenHeight);
+
 	static constexpr float brickWidth = 40.0f;
 	static constexpr float brickHeight = 24.0f;
-	static constexpr int nBricksAcross = 1;
-	static constexpr int nBricksDown = 2;
+	static constexpr int nBricksAcross = 18;
+	static constexpr int nBricksDown = 6;
 	static constexpr int brickEdict = nBricksAcross * nBricksDown;
+	vec2 gridPos = vec2(40.0f, bounds.top);
+
+	static constexpr int colorEdict = 6;
+
+	const Color gridColors[colorEdict] = { Colors::Red, Colors::Green, Colors::Blue, Colors::Cyan, Colors::Yellow, Colors::Magenta, };
 
 	int nBricks = brickEdict;
 
 	FrameTimer ft;
 
 	brick bricks[brickEdict];
-
-	rect bounds;
 
 	ball playerBall;
 
