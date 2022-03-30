@@ -51,6 +51,11 @@ private:
 	/*  User Variables              */
 	/********************************/
 
+	bool bStarted = false;
+	bool bGameWon = false;
+	bool bGameOver = false;
+	bool playedOverSound = false;
+
 	static constexpr float brickWidth = 40.0f;
 	static constexpr float brickHeight = 24.0f;
 	static constexpr int nBricksAcross = 18;
@@ -82,8 +87,9 @@ private:
 
 	Sound deathSFX[2];
 
-	Sound gameOverSound;
-
 	Sound breakSFX[3];
+
+	Sound wonSound;
+	Sound failSound;
 	
 };

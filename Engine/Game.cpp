@@ -45,12 +45,13 @@ Game::Game(MainWindow& wnd)
 		Sound(L"sounds\\ballDie0.wav"), 
 		Sound(L"sounds\\ballDie1.wav")
 	},
-	gameOverSound(L"sounds\\gameover.wav"),
 	breakSFX{
 	Sound(L"sounds\\brickBreak0.wav"),
 	Sound(L"sounds\\brickBreak1.wav"),
 	Sound(L"sounds\\brickBreak2.wav")
-	}
+	},
+	wonSound(L"sounds\\gameWon.wav"),
+	failSound(L"sounds\\gameOver.wav")
 {
 	const Color Colors[4] = { Colors::Red, Colors::Green, Colors::Blue, Colors::Cyan };
 
@@ -86,67 +87,115 @@ void Game::Go()
 void Game::UpdateModel(float dt)
 {
 
-	playerPaddle.update(wnd.mouse, dt);
-	playerPaddle.clampToScreen(bounds);
-
-	playerBall.update(dt);
-
-
-	if (playerPaddle.paddleBall(playerBall))
-		paddleSound.Play(1.0f, 0.2f);
-		
-
-	bool bHasCollided = false;
-	float closestCollideDistSq;
-	int closestCollideIndex = 0;
-
-	for (int i = 0; i < nBricks; i++)
+	if (bStarted && !(bGameOver || bGameWon)) //main game stuff
 	{
-		if (bricks[i].checkForCollision(playerBall))
-		{
-			const float newCollideDistSq = (playerBall.getPos() - bricks[i].getCenter()).getLengthSq();
+		if (wnd.kbd.KeyIsPressed(VK_ESCAPE))
+			bStarted = false;
 
-			if (bHasCollided)
+		//debug
+		if (wnd.kbd.KeyIsPressed('W'))
+			bGameWon = true;
+		if (wnd.kbd.KeyIsPressed('F'))
+			bGameOver = true;
+
+		playerPaddle.update(wnd.mouse, dt);
+		playerPaddle.clampToScreen(bounds);
+
+		playerBall.update(dt);
+
+
+		if (playerPaddle.paddleBall(playerBall))
+			paddleSound.Play(1.0f, 0.2f);
+
+
+		bool bHasCollided = false;
+		float closestCollideDistSq;
+		int closestCollideIndex = 0;
+
+		for (int i = 0; i < nBricks; i++)
+		{
+			if (bricks[i].checkForCollision(playerBall))
 			{
-				if (newCollideDistSq < closestCollideDistSq)
+				const float newCollideDistSq = (playerBall.getPos() - bricks[i].getCenter()).getLengthSq();
+
+				if (bHasCollided)
+				{
+					if (newCollideDistSq < closestCollideDistSq)
+					{
+						closestCollideDistSq = newCollideDistSq;
+						closestCollideIndex = i;
+					}
+				}
+				else
 				{
 					closestCollideDistSq = newCollideDistSq;
 					closestCollideIndex = i;
+					bHasCollided = true;
 				}
 			}
-			else
-			{
-				closestCollideDistSq = newCollideDistSq;
-				closestCollideIndex = i;
-				bHasCollided = true;
-			}
+		}
+
+		if (bHasCollided)
+		{
+			bricks[closestCollideIndex].collide(playerBall);
+			breakSFX[breakSFXRand(rng)].Play(1.0f, 0.05f);
+			playerPaddle.resetCooldown();
+		}
+
+		if (playerBall.checkForBoundsCollision(bounds))
+		{
+			impactSFX[impactSFXRand(rng)].Play(1.0f, 0.1f);
+			playerPaddle.resetCooldown();
 		}
 	}
-
-	if (bHasCollided)
+	else if (bGameWon)
 	{
-		bricks[closestCollideIndex].collide(playerBall);
-		breakSFX[breakSFXRand(rng)].Play(1.0f, 0.02f);
-		playerPaddle.resetCooldown();
+		if (!playedOverSound) //protects your ears.
+		{
+			wonSound.Play(1.0f, 0.1f);
+			playedOverSound = true;
+		}
 	}
-
-	if (playerBall.checkForBoundsCollision(bounds))
+	else if (bGameOver)
 	{
-		impactSFX[impactSFXRand(rng)].Play(1.0f, 0.1f);
-		playerPaddle.resetCooldown();
+		if (!playedOverSound)
+		{
+			failSound.Play(1.0f, 0.1f);
+			playedOverSound = true;
+		}
 	}
-		
-
-
+	else //do main menu stuff
+	{
+		if (wnd.kbd.KeyIsPressed(VK_RETURN))
+			bStarted = true;
+	}
 
 }
 
 void Game::ComposeFrame()
 {
-	playerPaddle.draw(gfx);
-	playerBall.draw(gfx);
-	for (brick& b : bricks)
+	if (bStarted && !(bGameOver || bGameWon)) //main game stuff
 	{
-		b.draw(gfx);
+		playerPaddle.draw(gfx);
+		playerBall.draw(gfx);
+		for (brick& b : bricks)
+		{
+			b.draw(gfx);
+		}
 	}
+	else if (bGameWon)
+	{
+		SpriteCodex::drawGameWon(vec2(gfx.ScreenWidth / 2, gfx.ScreenHeight / 2), gfx);
+	}
+	else if (bGameOver)
+	{
+		SpriteCodex::drawGameOver(vec2 (gfx.ScreenWidth / 2, gfx.ScreenHeight / 2), gfx);
+	}
+	else //sitting on main menu
+	{
+		SpriteCodex::drawTitle(vec2(gfx.ScreenWidth / 2, gfx.ScreenHeight / 2), gfx);
+	}
+
+
+
 }
