@@ -33,6 +33,8 @@ vec2 ball::getVelocity() const
 	return vel;
 }
 
+
+
 bool ball::checkForBoundsCollision(const rect & wall)
 {
 	const rect bb = getBoundingBox();
@@ -58,27 +60,6 @@ bool ball::checkForBoundsCollision(const rect & wall)
 		return true;
 	}
 
-	if (bb.bottom > wall.bottom && bb.left < wall.left)
-	{
-		pos.y -= bb.bottom - wall.bottom;
-		reboundY();
-		pos.x += wall.left - bb.left;
-		reboundX();
-
-		return true;
-	}
-
-	if (bb.bottom > wall.bottom && bb.right > wall.right)
-	{
-		pos.y -= bb.bottom - wall.bottom;
-		reboundY();
-		pos.x -= bb.right - wall.right;
-		reboundX();
-
-		return true;
-	}
-
-
 	if (bb.left < wall.left)
 	{
 		pos.x += wall.left - bb.left;
@@ -97,12 +78,6 @@ bool ball::checkForBoundsCollision(const rect & wall)
 		reboundY();
 		return true;
 	}
-	else if (bb.bottom > wall.bottom)
-	{
-		pos.y -= bb.bottom - wall.bottom;
-		reboundY();
-		return true;
-	}
 
 	return false;
 }
@@ -110,6 +85,19 @@ bool ball::checkForBoundsCollision(const rect & wall)
 vec2 ball::getPos()
 {
 	return pos;
+}
+
+bool ball::checkForFailure(const rect & wall)
+{
+	rect bb = getBoundingBox();
+
+	if (bb.bottom > wall.bottom)
+	{
+		pos.y -= bb.bottom - wall.bottom;
+		return true;
+	}
+
+	return false;
 }
 
 rect ball::getBoundingBox() const

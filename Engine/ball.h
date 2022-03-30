@@ -17,6 +17,7 @@ public:
 	vec2 getVelocity() const;
 	bool checkForBoundsCollision(const rect& wall);
 	vec2 getPos();
+	bool checkForFailure(const rect& wall);
 
 	rect getBoundingBox() const;
 

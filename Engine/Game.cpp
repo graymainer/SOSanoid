@@ -142,6 +142,13 @@ void Game::UpdateModel(float dt)
 			playerPaddle.resetCooldown();
 		}
 
+		if (playerBall.checkForFailure(bounds))
+		{
+			bGameOver = true;
+			return;
+		}
+
+
 		if (playerBall.checkForBoundsCollision(bounds))
 		{
 			impactSFX[impactSFXRand(rng)].Play(1.0f, 0.1f);
