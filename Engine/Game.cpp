@@ -153,7 +153,12 @@ void Game::UpdateModel(float dt)
 		if (playerBall.checkForFailure(bounds))
 		{
 			if (bGodMode)
+			{
+				playerBall.reboundY();
+				playerPaddle.startCooldown();
 				return;
+			}
+				
 
 			if (nLives <= 0)
 			{
