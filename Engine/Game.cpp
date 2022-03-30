@@ -31,7 +31,7 @@ Game::Game(MainWindow& wnd)
 	playerPaddle(vec2(gfx.ScreenWidth / 2, gfx.ScreenHeight * 0.9), 60.0f, 15.0f, 20.0f, Colors::Gray, Colors::Blue),
 	rng(rd()),
 	impactSFXRand(0, 4),
-	deathSFXRand(0, 1),
+	lifeLostSFXRand(0, 1),
 	breakSFXRand(0, 2),
 	paddleSound(L"sounds\\arkpad.wav"),
 	impactSFX{ 
@@ -41,7 +41,7 @@ Game::Game(MainWindow& wnd)
 		Sound(L"sounds\\ballHit3.wav"), 
 		Sound(L"sounds\\ballHit4.wav")
 	},
-	deathSFX{ 
+	lifeLostSFX{
 		Sound(L"sounds\\ballDie0.wav"), 
 		Sound(L"sounds\\ballDie1.wav")
 	},
@@ -51,7 +51,8 @@ Game::Game(MainWindow& wnd)
 	Sound(L"sounds\\brickBreak2.wav")
 	},
 	wonSound(L"sounds\\gameWon.wav"),
-	failSound(L"sounds\\gameOver.wav")
+	failSound(L"sounds\\gameOver.wav"),
+	deathSound(L"sounds\\death.wav")
 {
 	const Color Colors[4] = { Colors::Red, Colors::Green, Colors::Blue, Colors::Cyan };
 
@@ -144,8 +145,19 @@ void Game::UpdateModel(float dt)
 
 		if (playerBall.checkForFailure(bounds))
 		{
-			bGameOver = true;
-			return;
+			if (nLives <= 0)
+			{
+				deathSound.Play(1.0f, 0.25f);
+				bGameOver = true;
+				return;
+			}
+			else
+			{
+				lifeLostSFX[lifeLostSFXRand(rng)].Play(1.0f, 0.1f);
+				playerBall.reboundY();
+				nLives -= 1;
+			}
+
 		}
 
 

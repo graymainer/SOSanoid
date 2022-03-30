@@ -56,6 +56,8 @@ private:
 	bool bGameOver = false;
 	bool playedOverSound = false;
 
+	int nLives = 2;
+
 	static constexpr float brickWidth = 40.0f;
 	static constexpr float brickHeight = 24.0f;
 	static constexpr int nBricksAcross = 18;
@@ -78,18 +80,20 @@ private:
 	std::random_device rd;
 	std::mt19937 rng;
 	std::uniform_int_distribution<int> impactSFXRand;
-	std::uniform_int_distribution<int> deathSFXRand;
+	std::uniform_int_distribution<int> lifeLostSFXRand;
 	std::uniform_int_distribution<int> breakSFXRand;
 
 	Sound paddleSound;
 
 	Sound impactSFX[5];
 
-	Sound deathSFX[2];
+	Sound lifeLostSFX[2];
 
 	Sound breakSFX[3];
 
 	Sound wonSound;
 	Sound failSound;
+
+	Sound deathSound;
 	
 };
