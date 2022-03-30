@@ -14,7 +14,7 @@ void brick::draw(Graphics& gfx)
 	if (bDestroyed)
 		return;
 
-	gfx.DrawRect(shape.offset(-padding), color);
+	bevel.drawBevelledBrick(gfx, shape, color);
 }
 
 bool brick::checkForCollision(const ball & plyBall) const
