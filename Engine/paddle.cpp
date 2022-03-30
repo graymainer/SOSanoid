@@ -84,3 +84,8 @@ void paddle::resetCooldown()
 {
 	bCooldown = false;
 }
+
+void paddle::startCooldown()
+{
+	bCooldown = true;
+}

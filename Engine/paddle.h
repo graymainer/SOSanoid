@@ -20,6 +20,7 @@ public:
 	rect getRect();
 
 	void resetCooldown();
+	void startCooldown();
 
 private:
 	

@@ -60,13 +60,15 @@ private:
 
 	static constexpr float brickWidth = 40.0f;
 	static constexpr float brickHeight = 24.0f;
-	static constexpr int nBricksAcross = 18;
-	static constexpr int nBricksDown = 4;
-	static constexpr int nBricks = nBricksAcross * nBricksDown;
+	static constexpr int nBricksAcross = 1;
+	static constexpr int nBricksDown = 2;
+	static constexpr int brickEdict = nBricksAcross * nBricksDown;
+
+	int nBricks = brickEdict;
 
 	FrameTimer ft;
 
-	brick bricks[nBricks];
+	brick bricks[brickEdict];
 
 	rect bounds;
 

@@ -113,7 +113,7 @@ void Game::UpdateModel(float dt)
 		float closestCollideDistSq;
 		int closestCollideIndex = 0;
 
-		for (int i = 0; i < nBricks; i++)
+		for (int i = 0; i < brickEdict; i++)
 		{
 			if (bricks[i].checkForCollision(playerBall))
 			{
@@ -141,7 +141,15 @@ void Game::UpdateModel(float dt)
 			bricks[closestCollideIndex].collide(playerBall);
 			breakSFX[breakSFXRand(rng)].Play(1.0f, 0.05f);
 			playerPaddle.resetCooldown();
+			nBricks -= 1;
 		}
+
+		if (nBricks <= 0)
+		{
+			bGameWon = true;
+			return;
+		}
+			
 
 		if (playerBall.checkForFailure(bounds))
 		{
@@ -156,6 +164,7 @@ void Game::UpdateModel(float dt)
 				lifeLostSFX[lifeLostSFXRand(rng)].Play(1.0f, 0.1f);
 				playerBall.reboundY();
 				nLives -= 1;
+				playerPaddle.startCooldown();
 			}
 
 		}
