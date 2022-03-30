@@ -76,7 +76,7 @@ private:
 
 	static constexpr int colorEdict = 6;
 
-	static constexpr Color borderColor = Colors::Blue;
+	static constexpr Color borderColor = Color(0, 82, 145);
 
 	void drawBorders();
 
