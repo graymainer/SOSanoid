@@ -200,10 +200,19 @@ void Game::UpdateModel(float dt)
 
 }
 
+void Game::drawBorders()
+{
+	gfx.DrawRect(borderLeft, borderColor);
+	gfx.DrawRect(borderRight, borderColor);
+	gfx.DrawRect(borderTop, borderColor);
+}
+
 void Game::ComposeFrame()
 {
 	if (bStarted && !(bGameOver || bGameWon)) //main game stuff
 	{
+		
+		drawBorders();
 		playerPaddle.draw(gfx);
 		playerBall.draw(gfx);
 		for (brick& b : bricks)

@@ -59,16 +59,26 @@ private:
 
 	int nLives = 2;
 
-	rect bounds = rect(0.0f, (float)gfx.ScreenWidth, 40.0f, (float)gfx.ScreenHeight);
+	static constexpr float borderWidth = 10.0f;
+
+	rect borderLeft = rect(0.0f, borderWidth, 0.0f, (float)gfx.ScreenHeight);
+	rect borderRight = rect(gfx.ScreenWidth - borderWidth, (gfx.ScreenWidth - borderWidth) + borderWidth, 0.0f, (float)gfx.ScreenHeight);
+	rect borderTop = rect(0.0f, gfx.ScreenWidth, 0.0f, borderWidth);
+
+	rect bounds = rect(borderLeft.right, borderRight.left, borderTop.top, (float)gfx.ScreenHeight);
 
 	static constexpr float brickWidth = 40.0f;
 	static constexpr float brickHeight = 24.0f;
 	static constexpr int nBricksAcross = 18;
 	static constexpr int nBricksDown = 6;
 	static constexpr int brickEdict = nBricksAcross * nBricksDown;
-	vec2 gridPos = vec2(40.0f, bounds.top);
+	vec2 gridPos = vec2(40.0f, borderTop.top + borderWidth + 10.0f);
 
 	static constexpr int colorEdict = 6;
+
+	static constexpr Color borderColor = Colors::Blue;
+
+	void drawBorders();
 
 	const Color gridColors[colorEdict] = { Colors::Red, Colors::Green, Colors::Blue, Colors::Cyan, Colors::Yellow, Colors::Magenta, };
 
