@@ -87,6 +87,8 @@ void Game::UpdateModel(float dt)
 
 	if (bStarted && !(bGameOver || bGameWon)) //main game stuff
 	{
+		bReady = false;
+
 		if (wnd.kbd.KeyIsPressed(VK_ESCAPE))
 			bStarted = false;
 
@@ -194,8 +196,26 @@ void Game::UpdateModel(float dt)
 	}
 	else //do main menu stuff
 	{
-		if (wnd.kbd.KeyIsPressed(VK_RETURN))
-			bStarted = true;
+		if (wnd.kbd.KeyIsPressed(VK_RETURN) && !bReady)
+		{
+			bReady = true;
+
+		}
+
+		if (bReady)
+		{
+			if (readyElapsed >= readyTime * 500.0f)
+			{
+				bStarted = true;
+			}
+			else
+			{
+				readyElapsed += 1.0f;
+				SpriteCodex::DrawReady(vec2(gfx.ScreenWidth / 2, gfx.ScreenHeight / 2), gfx);
+			}
+
+		}
+			
 	}
 
 }
@@ -226,11 +246,14 @@ void Game::ComposeFrame()
 	}
 	else if (bGameOver)
 	{
-		SpriteCodex::drawGameOver(vec2 (gfx.ScreenWidth / 2, gfx.ScreenHeight / 2), gfx);
+		SpriteCodex::DrawGameOver(vec2 (gfx.ScreenWidth / 2, gfx.ScreenHeight / 2), gfx);
 	}
 	else //sitting on main menu
 	{
-		SpriteCodex::drawTitle(vec2(gfx.ScreenWidth / 2, gfx.ScreenHeight / 2), gfx);
+		if (bReady)
+			return;
+
+		SpriteCodex::DrawTitle(vec2(gfx.ScreenWidth / 2, gfx.ScreenHeight / 2), gfx);
 	}
 
 

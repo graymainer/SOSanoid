@@ -54,8 +54,12 @@ private:
 	bool bStarted = false;
 	bool bGameWon = false;
 	bool bGameOver = false;
+	bool bReady = false;
 	bool playedOverSound = false;
 	static constexpr bool bGodMode = false; //god mode for debugging
+
+	float readyTime = 3.0f;
+	float readyElapsed = 0.0f;
 
 	int nLives = 2;
 
