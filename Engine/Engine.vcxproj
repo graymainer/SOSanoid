@@ -94,6 +94,7 @@
       <CallingConvention>VectorCall</CallingConvention>
       <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -137,6 +138,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ball.h" />
+    <ClInclude Include="beveller.h" />
     <ClInclude Include="brick.h" />
     <ClInclude Include="ChiliException.h" />
     <ClInclude Include="ChiliWin.h" />
@@ -158,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ball.cpp" />
+    <ClCompile Include="beveller.cpp" />
     <ClCompile Include="brick.cpp" />
     <ClCompile Include="DXErr.cpp" />
     <ClCompile Include="FrameTimer.cpp" />
