@@ -8,14 +8,12 @@
 class beveller {
 
 public:
-	beveller(float in_shadeSteps, int in_stepintensity);
+	beveller(int in_steps, int in_colorStep);
 
-	void drawBevelledBrick(Graphics& gfx, rect brick, const Color brickColor);
+	void drawBevelledBrick(Graphics& gfx, rect brick, Color brickColor);
 
 
 private:
-	Color bevelShade;
-
-	int shadeStepIntensity = 1;
-	float shadeSteps = 2.0f;
+	int bevelSteps = 2; //how many times to bevel the object.
+	int bevelColorStep = 100; //how much the color should be deincremented each step. default works well with 2 steps.
 };
