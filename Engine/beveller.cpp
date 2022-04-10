@@ -25,9 +25,9 @@ void beveller::drawBevelledBrick(Graphics & gfx, rect brick, Color brickColor)
 
 	for (int step = 1; step < bevelSteps + 2; step++) //this actually works, but the color is screwed up. first of all, we end up adding unwanted color, and secondly, on the second step, we reach a color, then stop.
 	{
-		for (int y = steppedTop; y < steppedBot; ++y)
+		for (int y = (int)steppedTop; y < steppedBot; ++y)
 		{
-			for (int x = steppedLeft; x < steppedRight; ++x)
+			for (int x = (int)steppedLeft; x < steppedRight; ++x)
 			{
 				gfx.PutPixel(x, y, Color(steppedRed, steppedGreen, steppedBlue));
 			}
