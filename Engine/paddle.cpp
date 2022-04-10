@@ -46,11 +46,15 @@ bool paddle::paddleBall(ball & plyBall)
 	{	
 		if (std::signbit(plyBall.getVelocity().x) == std::signbit((ballPos - pos).x))
 		{
-			plyBall.reboundY();
+			float distToOrigin = (ballPos.x - pos.x) / varianceFactor;
+
+			plyBall.reboundY(distToOrigin);
 		}
 		else if (ballPos.x >= paddleBB.left && ballPos.x <= paddleBB.right)
 		{
-			plyBall.reboundY();
+			float distToOrigin = (ballPos.x - pos.x) / varianceFactor;
+
+			plyBall.reboundY(distToOrigin);
 		}
 		else
 		{

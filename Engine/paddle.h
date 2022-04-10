@@ -34,4 +34,6 @@ private:
 	Color paddleWingClr;
 	bool bCooldown = false;
 
+	static constexpr float varianceFactor = 40;
+
 };

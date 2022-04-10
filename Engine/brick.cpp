@@ -39,11 +39,11 @@ void brick::collide(ball & plyBall)
 
 	if ( std::signbit(plyBall.getVelocity().x) == std::signbit( (ballPos - getCenter()).x) )
 	{
-		plyBall.reboundY();
+		plyBall.reboundY(0);
 	}
 	else if (ballPos.x >= shape.left && ballPos.x <= shape.right)
 	{
-		plyBall.reboundY();
+		plyBall.reboundY(0);
 	}
 	else
 	{

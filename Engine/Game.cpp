@@ -154,7 +154,7 @@ void Game::UpdateModel(float dt)
 		{
 			if (bGodMode)
 			{
-				playerBall.reboundY();
+				playerBall.reboundY(0);
 				playerPaddle.startCooldown();
 				return;
 			}
@@ -169,7 +169,7 @@ void Game::UpdateModel(float dt)
 			else
 			{
 				lifeLostSFX[lifeLostSFXRand(rng)].Play(1.0f, 0.1f);
-				playerBall.reboundY();
+				playerBall.reboundY(0);
 				nLives -= 1;
 				playerPaddle.startCooldown();
 			}

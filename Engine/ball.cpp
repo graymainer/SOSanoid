@@ -1,4 +1,5 @@
 #include "ball.h"
+#include <algorithm> //for std::clamp
 
 ball::ball(vec2 in_pos, vec2 in_vel)
 	:
@@ -13,9 +14,14 @@ void ball::reboundX()
 	vel.x = -vel.x;
 }
 
-void ball::reboundY()
+void ball::reboundY(float variance)
 {
+
 	vel.y = -vel.y;
+	if (variance != 0)
+	{
+		vel.x = baseX * variance;
+	}
 }
 
 void ball::draw(Graphics& gfx)
@@ -26,6 +32,9 @@ void ball::draw(Graphics& gfx)
 void ball::update(float dt)
 {
 	pos += vel * dt;
+
+	vel.x = std::clamp(vel.x, -maxVel, maxVel);
+	vel.y = std::clamp(vel.y, -maxVel, maxVel);
 }
 
 vec2 ball::getVelocity() const
@@ -43,7 +52,7 @@ bool ball::checkForBoundsCollision(const rect & wall)
 	if (bb.top < wall.top && bb.left < wall.left)
 	{
 		pos.y += wall.top - bb.top;
-		reboundY();
+		reboundY(0);
 		pos.x += wall.left - bb.left;
 		reboundX();
 
@@ -53,7 +62,7 @@ bool ball::checkForBoundsCollision(const rect & wall)
 	if (bb.top < wall.top && bb.right > wall.right)
 	{
 		pos.y += wall.top - bb.top;
-		reboundY();
+		reboundY(0);
 		pos.x -= wall.right - bb.right;
 		reboundX();
 
@@ -75,7 +84,7 @@ bool ball::checkForBoundsCollision(const rect & wall)
 	else if (bb.top < wall.top)
 	{
 		pos.y += wall.top - bb.top;
-		reboundY();
+		reboundY(0);
 		return true;
 	}
 

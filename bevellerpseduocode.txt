@@ -1,0 +1,34 @@
+bevelSteps = 2//define how many times to bevel the object.
+bevelColorStep = 100 //how much the color should be deincremented each step.
+
+module drawBeveledRect(rectf rect, color clr{255, 0, 0})
+
+	Color steppedColor = {clr - (bevelColorStep * bevelSteps) }
+	float steppedLeft = rect.left
+	float steppedRight = rect.right
+	float steppedTop = rect.top
+	float steppedBot = rect.bottom
+
+	for (int step = 1; step < bevelSteps + 1; step++)
+	{
+		for (int y = steppedTop; y < steppedBot; ++y)
+		{
+			for (int x = steppedLeft; x < steppedRight; ++x)
+			{
+				putpixel(x y, clr)
+			}
+		}
+	
+		steppedLeft += step;
+		steppedRight -= step;
+		steppedTop += step;
+		steppedBot -= step;
+		
+		steppedColor = {steppedColor.r += bevelColorStep, steppedColor.g += bevelColorStep, steppedColor.b += bevelColorStep}
+		
+	}
+
+
+	
+	
+end

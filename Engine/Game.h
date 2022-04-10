@@ -56,7 +56,7 @@ private:
 	bool bGameOver = false;
 	bool bReady = false;
 	bool playedOverSound = false;
-	static constexpr bool bGodMode = false; //god mode for debugging
+	static constexpr bool bGodMode = true; //god mode for debugging
 
 	float readyTime = 3.0f;
 	float readyElapsed = 0.0f;
