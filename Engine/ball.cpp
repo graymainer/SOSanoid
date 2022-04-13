@@ -1,5 +1,5 @@
 #include "ball.h"
-#include <algorithm> //for std::clamp
+#include <algorithm> //for std::clamp, requires project to use c++ 17!
 
 ball::ball(vec2 in_pos, vec2 in_vel)
 	:
