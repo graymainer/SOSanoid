@@ -18,6 +18,21 @@
  *	You should have received a copy of the GNU General Public License					  *
  *	along with The Chili DirectX Framework.  If not, see <http://www.gnu.org/licenses/>.  *
  ******************************************************************************************/
+
+/*previously, on Autism Coders™!
+i just implemented the timers needed for the power ups to disable
+i moved the sound players to their respective classes from game. caues redfinied macro warnings, not much can be done, some conditions require this setup
+i added a new type system for bricks. different bricks do different things, some give power ups, some kill you. 
+collision handling for ball has been messed with a bit, its sound player is now local and it changes depending on hit brick type
+currently compiles, but needs sounds, crashes on startup.
+implement looping sounds for power ups.
+PREVIOUSLY AGAIN!:
+
+
+brick type behaviors seem to be implemented, but their triggers are a bit fickle, specifically with power ups.
+need to dim brick colors depending on health.
+*/
+
 #pragma once
 
 #include "Keyboard.h"
@@ -29,7 +44,6 @@
 #include "paddle.h"
 #include "FrameTimer.h"
 #include "Sound.h"
-#include <random>
 
 class Game
 {
@@ -60,8 +74,6 @@ private:
 
 	float readyTime = 3.0f;
 	float readyElapsed = 0.0f;
-
-	int nLives = 2;
 
 	static constexpr float borderWidth = 10.0f;
 
@@ -98,24 +110,8 @@ private:
 
 	//sound stuff
 
-	//for our random sound
-	std::random_device rd;
-	std::mt19937 rng;
-	std::uniform_int_distribution<int> impactSFXRand;
-	std::uniform_int_distribution<int> lifeLostSFXRand;
-	std::uniform_int_distribution<int> breakSFXRand;
-
-	Sound paddleSound;
-
-	Sound impactSFX[5];
-
-	Sound lifeLostSFX[2];
-
-	Sound breakSFX[3];
-
 	Sound wonSound;
 	Sound failSound;
-
 	Sound deathSound;
 	
 };

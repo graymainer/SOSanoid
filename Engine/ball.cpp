@@ -4,14 +4,31 @@
 ball::ball(vec2 in_pos, vec2 in_vel)
 	:
 	pos(in_pos),
-	vel(in_vel)
+	vel(in_vel),
 	//bb(in_pos, radius, radius) //un-init
+
+	lifeLostSnd {
+		Sound(L"sounds\\ballDie0.wav"),
+		Sound(L"sounds\\ballDie1.wav")
+	},
+
+	ricochetSnd{
+		Sound(L"sounds\\ballHit0.wav"),
+		Sound(L"sounds\\ballHit1.wav"),
+		Sound(L"sounds\\ballHit2.wav"),
+		Sound(L"sounds\\ballHit3.wav"),
+		Sound(L"sounds\\ballHit4.wav")
+	},
+
+	ricochetSndRange(0, 4),
+	lifeLostSndRange(0, 1)
 {
 }
 
 void ball::reboundX()
 {
 	vel.x = -vel.x;
+	ricochetSnd[ricochetSndRange(rng)].Play(1.0f, 0.1f);
 }
 
 void ball::reboundY(float variance)
@@ -22,6 +39,7 @@ void ball::reboundY(float variance)
 	{
 		vel.x = baseX * variance;
 	}
+	ricochetSnd[ricochetSndRange(rng)].Play(1.0f, 0.1f);
 }
 
 void ball::draw(Graphics& gfx)
@@ -35,6 +53,29 @@ void ball::update(float dt)
 
 	vel.x = std::clamp(vel.x, -maxVel, maxVel);
 	vel.y = std::clamp(vel.y, -maxVel, maxVel);
+
+	timeElapsed += 1.0f;
+
+	if (!bGod && !bDMGBoost && !bInstaKill && !bSpedUp)
+	{
+		timeElapsed = 0.0f;
+		return;
+	}
+
+
+	if (timeElapsed >= godTimer * 500.0f)
+		bGod = false;
+
+	if (timeElapsed >= dmgBoostTimer * 500.0f)
+		bDMGBoost = false;
+
+	if (timeElapsed >= instaKillTimer * 500.0f)
+		bInstaKill = false;
+
+	if (timeElapsed >= speedHazardTimer * 500.0f)
+		bSpedUp = false;
+
+
 }
 
 vec2 ball::getVelocity() const
@@ -103,6 +144,15 @@ bool ball::checkForFailure(const rect & wall)
 	if (bb.bottom > wall.bottom)
 	{
 		pos.y -= bb.bottom - wall.bottom;
+
+		if (!bGod)
+		{
+			nLives -= 1;
+			lifeLostSnd[lifeLostSndRange(rng)].Play(1.0f, 0.25f);
+		}
+			
+
+		reboundY(0);
 		return true;
 	}
 
@@ -112,6 +162,43 @@ bool ball::checkForFailure(const rect & wall)
 rect ball::getBoundingBox() const
 {
 	return rect::fromCenter(pos, radius, radius);
+}
+
+void ball::godMode()
+{
+	bGod = true;
+
+
+	//do stuff to figure out if the right amount of time has passed here, then set to false.
+}
+
+void ball::boostDamage()
+{
+	bDMGBoost = true;
+	//do stuff to figure out if the right amount of time has passed here, then set to false.
+}
+
+void ball::instaKill()
+{
+	bInstaKill = true;
+	//do stuff to figure out if the right amount of time has passed here, then set to false.
+}
+
+void ball::addLife()
+{
+	nLives += 1;
+}
+
+int ball::isDead() const
+{
+	return nLives <= 0;
+}
+
+void ball::boostSpeed() //boosts the speed by the boostPenaltyFactor and clamps within our speed range.
+{
+	vel.x = std::clamp(vel.x *= boostPenaltyFactor, -maxVel, maxVel);
+	vel.y = std::clamp(vel.y *= boostPenaltyFactor, -maxVel, maxVel);
+	bSpedUp = true;
 }
 
 

@@ -25,35 +25,14 @@ Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
 	gfx(wnd),
-	//testBrick(rect(450.0f, 550.0f, 485.0f, 515.0f), Colors::Blue),
 	playerBall(vec2(gfx.ScreenWidth / 2, gfx.ScreenHeight / 2), vec2(300.0f, 300.0f)),
 	playerPaddle(vec2(gfx.ScreenWidth / 2, gfx.ScreenHeight * 0.9), 60.0f, 15.0f, 20.0f, Colors::Gray, Colors::Blue),
-	rng(rd()),
-	impactSFXRand(0, 4),
-	lifeLostSFXRand(0, 1),
-	breakSFXRand(0, 2),
-	paddleSound(L"sounds\\arkpad.wav"),
-	impactSFX{ 
-		Sound(L"sounds\\ballHit0.wav"), 
-		Sound(L"sounds\\ballHit1.wav"), 
-		Sound(L"sounds\\ballHit2.wav"), 
-		Sound(L"sounds\\ballHit3.wav"), 
-		Sound(L"sounds\\ballHit4.wav")
-	},
-	lifeLostSFX{
-		Sound(L"sounds\\ballDie0.wav"), 
-		Sound(L"sounds\\ballDie1.wav")
-	},
-	breakSFX{
-	Sound(L"sounds\\brickBreak0.wav"),
-	Sound(L"sounds\\brickBreak1.wav"),
-	Sound(L"sounds\\brickBreak2.wav")
-	},
+
 	wonSound(L"sounds\\gameWon.wav"),
 	failSound(L"sounds\\gameOver.wav"),
 	deathSound(L"sounds\\death.wav")
-{
 
+{
 	int i = 0;
 
 	for (int y = 0; y < nBricksDown; y++)
@@ -62,7 +41,7 @@ Game::Game(MainWindow& wnd)
 
 		for (int x = 0; x < nBricksAcross; x++)
 		{
-			bricks[i] = brick(rect(gridPos + vec2(x * brickWidth, y * brickHeight), brickWidth, brickHeight), c);
+			bricks[i] = brick(rect(gridPos + vec2(x * brickWidth, y * brickHeight), brickWidth, brickHeight), c, brick::type::PWUP_INSTAKILL, 1);
 			i++;
 		}
 	}
@@ -104,8 +83,7 @@ void Game::UpdateModel(float dt)
 		playerBall.update(dt);
 
 
-		if (playerPaddle.paddleBall(playerBall))
-			paddleSound.Play(1.0f, 0.2f);
+		playerPaddle.paddleBall(playerBall);
 
 
 		bool bHasCollided = false;
@@ -137,8 +115,11 @@ void Game::UpdateModel(float dt)
 
 		if (bHasCollided)
 		{
-			bricks[closestCollideIndex].collide(playerBall);
-			breakSFX[breakSFXRand(rng)].Play(1.0f, 0.05f);
+			if (bricks[closestCollideIndex].collide(playerBall) == brick::type::PWUP_FASTPADDLE)
+				playerPaddle.boostSpeed();
+
+
+			//breakSFX[breakSFXRand(rng)].Play(1.0f, 0.05f);
 			playerPaddle.resetCooldown();
 			nBricks -= 1;
 		}
@@ -150,36 +131,27 @@ void Game::UpdateModel(float dt)
 		}
 			
 
+		//checks if we hit the fail boundary, and if so; if we are now dead.
 		if (playerBall.checkForFailure(bounds))
 		{
-			if (bGodMode)
-			{
-				playerBall.reboundY(0);
-				playerPaddle.startCooldown();
-				return;
-			}
-				
+			playerPaddle.startCooldown();
 
-			if (nLives <= 0)
+			if (bGodMode)
+				return;
+
+			if (playerBall.isDead())
 			{
 				deathSound.Play(1.0f, 0.25f);
 				bGameOver = true;
 				return;
 			}
-			else
-			{
-				lifeLostSFX[lifeLostSFXRand(rng)].Play(1.0f, 0.1f);
-				playerBall.reboundY(0);
-				nLives -= 1;
-				playerPaddle.startCooldown();
-			}
-
 		}
+
+
 
 
 		if (playerBall.checkForBoundsCollision(bounds))
 		{
-			impactSFX[impactSFXRand(rng)].Play(1.0f, 0.1f);
 			playerPaddle.resetCooldown();
 		}
 	}

@@ -7,7 +7,8 @@ paddle::paddle(const vec2& in_pos, const float in_halfWidth, const float in_half
 	halfHeight(in_halfHeight),
 	wingWidth(in_wingWidth),
 	paddleClr(in_clr0),
-	paddleWingClr(in_clr1)
+	paddleWingClr(in_clr1),
+	paddleSnd(L"sounds\\arkpad.wav")
 {
 }
 
@@ -21,6 +22,15 @@ void paddle::update(const Mouse& mou, const float dt)
 		return;
 
 	pos.x += vel.normalize().x * speed * dt;
+
+	if (!bSpedUp)
+	{
+		timeElapsed = 0.0f;
+		return;
+	}
+
+	if (timeElapsed >= speedBoostTimer * 500.0f)
+		bSpedUp = false;
 }
 
 void paddle::draw(Graphics & gfx)
@@ -62,6 +72,8 @@ bool paddle::paddleBall(ball & plyBall)
 		}
 
 		bCooldown = true;
+		paddleSnd.Play(1.0f, 0.2f);
+
 		return true;
 	}
 
@@ -92,4 +104,10 @@ void paddle::resetCooldown()
 void paddle::startCooldown()
 {
 	bCooldown = true;
+}
+
+void paddle::boostSpeed()
+{
+	speed *= 2;
+	bSpedUp = true;
 }

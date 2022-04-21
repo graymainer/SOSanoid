@@ -5,6 +5,7 @@
 #include "Colors.h"
 #include "ball.h"
 #include "Mouse.h"
+#include "Sound.h"
 
 class paddle {
 public:
@@ -22,6 +23,10 @@ public:
 	void resetCooldown();
 	void startCooldown();
 
+	//power up stuff
+
+	void boostSpeed();
+
 private:
 	
 
@@ -35,5 +40,15 @@ private:
 	bool bCooldown = false;
 
 	static constexpr float varianceFactor = 40;
+
+	//power up stuff
+	float timeElapsed = 0.0f;
+
+	float speedBoostTimer = 10.0f;
+
+	bool bSpedUp = false;
+
+	Sound paddleSnd;
+
 
 };
