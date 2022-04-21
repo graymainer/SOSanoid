@@ -20,15 +20,6 @@
  ******************************************************************************************/
 
 /*previously, on Autism Coders™!
-i just implemented the timers needed for the power ups to disable
-i moved the sound players to their respective classes from game. caues redfinied macro warnings, not much can be done, some conditions require this setup
-i added a new type system for bricks. different bricks do different things, some give power ups, some kill you. 
-collision handling for ball has been messed with a bit, its sound player is now local and it changes depending on hit brick type
-currently compiles, but needs sounds, crashes on startup.
-implement looping sounds for power ups.
-PREVIOUSLY AGAIN!:
-
-
 brick type behaviors seem to be implemented, but their triggers are a bit fickle, specifically with power ups.
 need to dim brick colors depending on health.
 */
