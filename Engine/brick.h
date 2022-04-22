@@ -7,13 +7,26 @@
 #include "beveller.h"
 #include <random>
 #include "Sound.h"
+#include "paddle.h"
 
 class brick {
 public:
-	enum class type { //these are the different possible types of bricks.
+	enum class type { //these are the different possible types of bricks. CAUTION: If changed, set the max value at game.cpp line 40 to the last index thats here.
 
 		EMPTY, //fuck & all
 		DEFAULT, //the normal, default, vanilla flavored brick. my favorite
+		DEFAULT1, //we do this to try and bias the computer toward standard bricks.
+		DEFAULT2,
+		DEFAULT3,
+		DEFAULT4,
+		DEFAULT5,
+		DEFAULT6,
+		DEFAULT7,
+		DEFAULT8,
+		DEFAULT9,
+		DEFAULT10,
+		DEFAULT11,
+		DEFAULT12,
 		INDESTRUCTIBLE, //good thing im indestructible
 		EXPLODABLE, //when destroyed, it will bring 4 other bricks in a cross pattern down with it.
 		DURABLE, //doubles the brick's hp.
@@ -34,8 +47,10 @@ public:
 	brick(const rect& in_rect, Color in_clr, type in_type, int in_hp);
 	void draw(Graphics& gfx);
 	bool checkForCollision(const ball& plyBall) const;
-	type collide(ball& plyBall);
+	bool collide(ball& plyBall, paddle & plyPaddle, const int nBrickCount);
 	vec2 getCenter() const;
+	
+	
 
 private:
 	static constexpr float padding = 2.0f;
@@ -43,6 +58,7 @@ private:
 	rect shape;
 	bool bDestroyed = true;
 	int hp = 2;
+
 
 	void repairBricks();
 	void explode();

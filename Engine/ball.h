@@ -44,7 +44,7 @@ private:
 
 	//rect bb; //our bounding box that represents us physically
 
-	int nLives = 2;
+	int nLives = 3;
 
 	vec2 pos;
 	vec2 vel;
@@ -76,7 +76,7 @@ private:
 
 	Sound hazSpeedSnd = { L"sounds\\haz_speed.wav" };
 	Sound pwupDMGSnd = { L"sounds\\pwup_dmgboost.wav" };
-	Sound pwupInstaKill = { L"sounds\\pwup_instakill.wav" };
+	Sound pwupInstaKillSnd = { L"sounds\\pwup_instakill.wav" };
 	Sound pwupLifeSnd = { L"sounds\\pwup_life.wav" };
 	Sound pwupGodSnd = { L"sounds\\pwup_god.wav" };
 	Sound pwupPenetrationSnd = { L"sounds\\pwup_penetration.wav" };

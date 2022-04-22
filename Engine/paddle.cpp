@@ -29,7 +29,7 @@ void paddle::update(const Mouse& mou, const float dt)
 		return;
 	}
 
-	if (timeElapsed >= speedBoostTimer * 500.0f)
+	if (timeElapsed == speedBoostTimer * 500.0f)
 		bSpedUp = false;
 }
 

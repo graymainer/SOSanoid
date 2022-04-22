@@ -24,7 +24,6 @@ brick::brick(const rect & in_rect, Color in_clr, type in_type, int in_hp)
 {
 	if (brickType == type::DURABLE)
 		hp *= 2;
-
 }
 
 void brick::draw(Graphics& gfx)
@@ -36,10 +35,7 @@ void brick::draw(Graphics& gfx)
 
 	switch (brickType)
 	{
-	default:
-		break;
-
-	case type::DEFAULT:
+	default: //we now need to assume that 'default:' goes for all normal ass vanilla bricks
 		clr = color;
 		break;
 
@@ -52,7 +48,7 @@ void brick::draw(Graphics& gfx)
 		break;
 
 	case type::HAZ_REPAIR:
-		clr = Colors::Black;
+		clr = Color(79, 118, 189);
 		break;
 
 	case type::HAZ_SPEEDUP:
@@ -100,11 +96,11 @@ bool brick::checkForCollision(const ball & plyBall) const
 	return shape.isOverlapping(plyBall.getBoundingBox());
 }
 
-brick::type brick::collide(ball & plyBall)
+bool brick::collide(ball & plyBall, paddle & plyPaddle, const int nBrickCount)
 {
 
 	if (bDestroyed || brickType == type::EMPTY)
-		return type::EMPTY;
+		return false;
 
 	assert(checkForCollision(plyBall));
 
@@ -119,7 +115,7 @@ brick::type brick::collide(ball & plyBall)
 	}
 		
 
-	if (!plyBall.bPenetrate)
+	if (!plyBall.bPenetrate || brickType == type::INDESTRUCTIBLE)
 	{
 		if (std::signbit(plyBall.getVelocity().x) == std::signbit((ballPos - getCenter()).x))
 		{
@@ -151,73 +147,78 @@ brick::type brick::collide(ball & plyBall)
 			if (plyBall.bInstaKill || hp <= 0)
 			{
 				bDestroyed = true;
-				brickType = type::EMPTY; //rip bozo, we've been destroyed so tell the engine that we're now empty space.
 
+				
 
 				breakSnd[breakSndRange(rng)].Play(1.0f, 0.15f);
 
 				switch (brickType)
 				{
 
-				case type::PWUP_GODMODE:
-				{
-					plyBall.godMode();
-					break;
+					case type::PWUP_GODMODE:
+					{
+						plyBall.godMode();
+						break;
+					}
+
+					case type::PWUP_MOREDMG:
+					{
+						plyBall.boostDamage();
+						break;
+					}
+
+					case type::PWUP_INSTAKILL:
+					{
+						plyBall.instaKill();
+						break;
+					}
+
+					case type::PWUP_LIFE:
+					{
+						plyBall.addLife();
+						break;
+					}
+
+					case type::PWUP_PENETRATE:
+					{
+						plyBall.bPenetrate = true;
+						break;
+					}
+
+					case type::PWUP_FASTPADDLE:
+					{
+						plyPaddle.boostSpeed();
+						break;
+					}
+
+					case type::HAZ_SPEEDUP:
+					{
+						plyBall.boostSpeed();
+						break;
+					}
+
+					case type::HAZ_REPAIR:
+					{
+						repairBricks();
+						break;
+					}
+
+					case type::EXPLODABLE:
+					{
+						explode();
+						break;
+					}
+
+					default:
+					{
+						break;
+					}
+
 				}
 
-				case type::PWUP_MOREDMG:
-				{
-					plyBall.boostDamage();
-					break;
-				}
-
-				case type::PWUP_INSTAKILL:
-				{
-					plyBall.instaKill();
-					break;
-				}
-
-				case type::PWUP_LIFE:
-				{
-					plyBall.addLife();
-					break;
-				}
-
-				case type::PWUP_PENETRATE:
-				{
-					plyBall.bPenetrate = true;
-					break;
-				}
-
-				case type::PWUP_FASTPADDLE:
-				{
-					return type::PWUP_FASTPADDLE;
-				}
-
-				case type::HAZ_SPEEDUP:
-				{
-					plyBall.boostSpeed();
-					break;
-				}
-
-				case type::HAZ_REPAIR:
-				{
-					repairBricks();
-					break;
-				}
-
-				case type::EXPLODABLE:
-				{
-					explode();
-					break;
-				}
-
-				default:
-				{
-					break;
-				}
-
-				}
+				brickType = type::EMPTY; //rip bozo, we've been destroyed so tell the engine that we're now empty space.
+				
+				return true;
 			}
 			else
 				breakSnd[breakSndRange(rng)].Play(1.5f, 0.15f); //temp, need hit sounds
@@ -225,7 +226,9 @@ brick::type brick::collide(ball & plyBall)
 
 		}
 		else
-			indestructableSnd.Play(1.0f, 0.1f);
+			indestructableSnd.Play(1.0f, 0.05f);
+
+	return false;
 }
 
 vec2 brick::getCenter() const

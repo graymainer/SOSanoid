@@ -20,8 +20,9 @@
  ******************************************************************************************/
 
 /*previously, on Autism Coders™!
-brick type behaviors seem to be implemented, but their triggers are a bit fickle, specifically with power ups.
 need to dim brick colors depending on health.
+explosions and repairs dont work
+timers for power ups need to be indivdualized and change '==' to '>=' for security.
 */
 
 #pragma once
@@ -61,7 +62,7 @@ private:
 	bool bGameOver = false;
 	bool bReady = false;
 	bool playedOverSound = false;
-	static constexpr bool bGodMode = false; //god mode for debugging
+	static constexpr bool bGodMode = true; //god mode for debugging
 
 	float readyTime = 3.0f;
 	float readyElapsed = 0.0f;
@@ -89,7 +90,10 @@ private:
 
 	const Color gridColors[colorEdict] = { Colors::Red, Colors::Green, Colors::Blue, Colors::Cyan, Colors::Yellow, Colors::Magenta, };
 
-	int nBricks = brickEdict;
+	void addBrickCount();
+	void subBrickCount();
+
+	int nBricks = 0;
 
 	FrameTimer ft;
 

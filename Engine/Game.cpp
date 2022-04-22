@@ -20,6 +20,7 @@
  ******************************************************************************************/
 #include "MainWindow.h"
 #include "Game.h"
+#include <random>
 
 Game::Game(MainWindow& wnd)
 	:
@@ -32,7 +33,12 @@ Game::Game(MainWindow& wnd)
 	failSound(L"sounds\\gameOver.wav"),
 	deathSound(L"sounds\\death.wav")
 
-{
+{ //brick creator and layer outter
+	std::random_device rd;
+	std::mt19937 rng(rd());
+
+	std::uniform_int_distribution<int>brickTypeRange(1, 24); //change max on enum change
+	
 	int i = 0;
 
 	for (int y = 0; y < nBricksDown; y++)
@@ -41,7 +47,14 @@ Game::Game(MainWindow& wnd)
 
 		for (int x = 0; x < nBricksAcross; x++)
 		{
-			bricks[i] = brick(rect(gridPos + vec2(x * brickWidth, y * brickHeight), brickWidth, brickHeight), c, brick::type::PWUP_INSTAKILL, 1);
+			const int enumIndex = brickTypeRange(rng);
+
+
+			bricks[i] = brick(rect(gridPos + vec2(x * brickWidth, y * brickHeight), brickWidth, brickHeight), c, brick::type(enumIndex), 1);
+			
+			if (brick::type(enumIndex) != brick::type::INDESTRUCTIBLE)
+				addBrickCount();
+			
 			i++;
 		}
 	}
@@ -115,13 +128,11 @@ void Game::UpdateModel(float dt)
 
 		if (bHasCollided)
 		{
-			if (bricks[closestCollideIndex].collide(playerBall) == brick::type::PWUP_FASTPADDLE)
-				playerPaddle.boostSpeed();
+			if (bricks[closestCollideIndex].collide(playerBall, playerPaddle, nBricks))
+				subBrickCount();
 
 
-			//breakSFX[breakSFXRand(rng)].Play(1.0f, 0.05f);
 			playerPaddle.resetCooldown();
-			nBricks -= 1;
 		}
 
 		if (nBricks <= 0)
@@ -202,6 +213,16 @@ void Game::drawBorders()
 	gfx.DrawRect(borderLeft, borderColor);
 	gfx.DrawRect(borderRight, borderColor);
 	gfx.DrawRect(borderTop, borderColor);
+}
+
+void Game::addBrickCount()
+{
+	nBricks += 1;
+}
+
+void Game::subBrickCount()
+{
+	nBricks -= 1;
 }
 
 void Game::ComposeFrame()

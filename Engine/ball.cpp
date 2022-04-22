@@ -60,19 +60,19 @@ void ball::update(float dt)
 	{
 		timeElapsed = 0.0f;
 		return;
-	}
+	} //issue with this is that when a power up with a lower timer starts before the last one ends, it will end immediately since this time will be greater than. == might solve that...
 
 
-	if (timeElapsed >= godTimer * 500.0f)
+	if (timeElapsed == godTimer * 500.0f)
 		bGod = false;
 
-	if (timeElapsed >= dmgBoostTimer * 500.0f)
+	if (timeElapsed == dmgBoostTimer * 500.0f)
 		bDMGBoost = false;
 
-	if (timeElapsed >= instaKillTimer * 500.0f)
+	if (timeElapsed == instaKillTimer * 500.0f)
 		bInstaKill = false;
 
-	if (timeElapsed >= speedHazardTimer * 500.0f)
+	if (timeElapsed == speedHazardTimer * 500.0f)
 		bSpedUp = false;
 
 
@@ -167,7 +167,7 @@ rect ball::getBoundingBox() const
 void ball::godMode()
 {
 	bGod = true;
-
+	pwupGodSnd.Play(1.0f, 0.25f);
 
 	//do stuff to figure out if the right amount of time has passed here, then set to false.
 }
@@ -175,18 +175,21 @@ void ball::godMode()
 void ball::boostDamage()
 {
 	bDMGBoost = true;
+	pwupDMGSnd.Play(1.0f, 0.25f);
 	//do stuff to figure out if the right amount of time has passed here, then set to false.
 }
 
 void ball::instaKill()
 {
 	bInstaKill = true;
+	pwupInstaKillSnd.Play(1.0f, 0.25f);
 	//do stuff to figure out if the right amount of time has passed here, then set to false.
 }
 
 void ball::addLife()
 {
 	nLives += 1;
+	pwupLifeSnd.Play(1.0f, 0.25f);
 }
 
 int ball::isDead() const
@@ -196,6 +199,7 @@ int ball::isDead() const
 
 void ball::boostSpeed() //boosts the speed by the boostPenaltyFactor and clamps within our speed range.
 {
+	hazSpeedSnd.Play(1.0f, 0.25f);
 	vel.x = std::clamp(vel.x *= boostPenaltyFactor, -maxVel, maxVel);
 	vel.y = std::clamp(vel.y *= boostPenaltyFactor, -maxVel, maxVel);
 	bSpedUp = true;
